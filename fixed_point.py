@@ -38,7 +38,7 @@ class FixedPoint:
         c = bin(c)[2:].zfill(self.A + self.A + self.B + self.B)
 
         o = len(c) - self.B
-        if c[o] == '0' or c[o] == '1' and (self.B == 1 or set(c[o + 1:]) - {'0'} == set()) and c[o - 1] == '0':
+        if o >= len(c) or c[o] == '0' or c[o] == '1' and (self.B == 1 or set(c[o + 1:]) - {'0'} == set()) and c[o - 1] == '0':
             c = c[:o].zfill(self.A + self.B)
         else:
             c = bin(int(c[:o], 2) + 1)[2:].zfill(self.A + self.B)
@@ -58,7 +58,7 @@ class FixedPoint:
         # ---------------------^---------
         #                     -o
         o = len(c) - self.B
-        if c[o] == '0' or c[o] == '1' and set(c[o + 1:]) - {'0'} == set() and c[o - 1] == '0':
+        if o >= len(c) or c[o] == '0' or c[o] == '1' and set(c[o + 1:]) - {'0'} == set() and c[o - 1] == '0':
             c = c[:o].zfill(self.A + self.B)
         else:
             c = bin(int(c[:o], 2) + 1)[2:].zfill(self.A + self.B)
