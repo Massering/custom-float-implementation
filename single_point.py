@@ -65,12 +65,7 @@ class Single:
                 return s + '0' * ceil(self.MAN / 4) + '+0'
         else:
             s += '0x1.'
-        # print(self.man)
-        # print(bin(self.man))
-        # print(bin(self.man)[2:].zfill(self.MAN + 1))
-        # print(bin(self.man)[2:][1:])
         man = bin(self.man)[2:].zfill(self.MAN + 1)[1:]
-        # print(man)
         for i in range(0, self.MAN, 4):
             s += hex(int(man[i:i + 4].zfill(4), 2))[2:]
         exp = str(self.exp)
@@ -95,29 +90,22 @@ class Single:
 
         sign = int(a + b != abs(a + b))
 
-        print('a:', bin(a))
-        print('b:', bin(b))
         c = abs(a + b)
         c = bin(c)[2:]
-        print('c:', c)
 
         if c == '0':
             return self.__class__(self.NULL_VALUE)
 
         rounded_c = bin_round(c, self.MAN + 1)[1:]
-        # print('cut:', len(rounded_c))
+        # FIXME: assert len(man) == 24
         exp = len(c) - len(rounded_c) + 1
-        print('exp:', exp)
-        print('r: ', rounded_c)  # str(sign) + ' ' + bin(exp)[2:].zfill(self.EXP) + ' ' +
 
         if exp >= 2 ** self.EXP - 1:
             return self.__class__('inf')
         if exp < 1:
             return self.__class__('-inf')
 
-        c = f'{sign} {bin(exp)[2:].zfill(self.EXP)} {rounded_c}'
-        print(c)
-        return self.__class__(c.replace(' ', ''))
+        return self.__class__(f'{sign}{bin(exp)[2:].zfill(self.EXP)[:self.EXP]}{rounded_c.zfill(self.MAN)[:self.MAN]}')
 
     def __sub__(self, other):
         if str(self) == self.NAN or str(other) == self.NAN:
@@ -151,7 +139,6 @@ class Single:
         # FIXME: assert len(man) == 24
 
         exp = (self.exp + other.exp) - self.MIN_EXP + k
-        # print(exp)
         if exp >= 2 ** self.EXP - 1:
             return self.__class__('inf')
         if exp < 1:
