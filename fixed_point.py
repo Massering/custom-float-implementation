@@ -5,7 +5,7 @@ class FixedPoint:
     def __init__(self, num):
         if num[:2] == '0x':
             num = bin(eval(num))
-        self.bin_num = num[2:].zfill(self.A + self.B)
+        self.bin_num = num[2:].zfill(self.A + self.B)[-(self.A + self.B):]
 
     def __str__(self):
         bin_num = self.bin_num
@@ -37,14 +37,13 @@ class FixedPoint:
         c = int(a, 2) * int(b, 2)
         c = bin(c)[2:].zfill(self.A + self.A + self.B + self.B)
 
-        o = -self.B
+        o = len(c) - self.B
         if c[o] == '0' or c[o] == '1' and (self.B == 1 or set(c[o + 1:]) - {'0'} == set()) and c[o - 1] == '0':
-            c = c[:len(c) + o].zfill(self.A + self.B)
+            c = c[:o].zfill(self.A + self.B)
         else:
-            c = bin(int(c[:len(c) + o], 2) + 1)[2:].zfill(self.A + self.B)
+            c = bin(int(c[:o], 2) + 1)[2:].zfill(self.A + self.B)
 
-        c = c[-(self.A + self.B):]
-        c = FixedPoint('0b' + c)
+        c = FixedPoint('0b' + c[-(self.A + self.B):])
         return c
 
     def __truediv__(self, other):  # Операция /
@@ -58,13 +57,13 @@ class FixedPoint:
         # 0000_0001_0000_0000 (0000_0000)
         # ---------------------^---------
         #                     -o
-        o = -self.B
+        o = len(c) - self.B
         if c[o] == '0' or c[o] == '1' and set(c[o + 1:]) - {'0'} == set() and c[o - 1] == '0':
-            c = c[:len(c) + o].zfill(self.A + self.B)
+            c = c[:o].zfill(self.A + self.B)
         else:
-            c = bin(int(c[:len(c) + o], 2) + 1)[2:].zfill(self.A + self.B)
+            c = bin(int(c[:o], 2) + 1)[2:].zfill(self.A + self.B)
 
-        return FixedPoint('0b' + c)
+        return FixedPoint('0b' + c[-(self.A + self.B):])
 
     def __invert__(self):
         return FixedPoint('0b' + ''.join('10'[int(i)] for i in self.bin_num))
