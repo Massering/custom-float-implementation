@@ -5,11 +5,16 @@ from half_point import Half
 
 
 if __name__ == '__main__':
-    FORMAT, rounding_type, *args = map(str, sys.argv[1:])
+    try:
+        FORMAT, rounding_type, *args = map(str, sys.argv[1:])
+        assert len(args) == 1 or len(args) == 3
+    except Exception:
+        print("Wrong number of input arguments", file=sys.stderr)
+        exit(777)
 
     if rounding_type != '1':
-        print('Wrong rounding type')
-        exit(0)
+        print('Wrong rounding type', file=sys.stderr)
+        exit(777)
 
     if '.' in FORMAT:
         FixedPoint.A, FixedPoint.B = tuple(map(int, FORMAT.split('.')))
@@ -19,9 +24,7 @@ if __name__ == '__main__':
         else:
             a, act, b = args
             a = FixedPoint(a)
-            # print('a:', a, [a])
             b = FixedPoint(b)
-            # print('b:', b, [b])
             if int(b) == 0 and act == '/':
                 print('error')
                 exit(0)
@@ -38,7 +41,6 @@ if __name__ == '__main__':
             b = Single(b)
             c = eval(f'a {act} b')
             print(c)
-            # print([c])
 
     elif FORMAT == 'h':
         if len(args) == 1:
@@ -50,18 +52,7 @@ if __name__ == '__main__':
             b = Half(b)
             c = eval(f'a {act} b')
             print(c)
-            # print([c])
 
     else:
-        print('Wrong format')
-
-'''
-16.12 1 0x17360
-8.8 1 0xdc9f + 0xd736
-8.8 1 0x300 * 0x500
-f 1 0xB9CD542
-f 1 0x414587dd * 0x42ebf110
-h 1 0x4145 * 0x42eb
-f 1 0x1 / 0x0
-
-'''
+        print('Wrong format of input data', file=sys.stderr)
+        exit(777)

@@ -60,15 +60,15 @@ class Single:
                     return self.INF
             return self.NAN
         elif self.exp == self.MIN_EXP:
-            s += '0x0.'
             if self.man == 0:
-                return s + '0' * ceil(self.MAN / 4) + '+0'
+                return s + self.NULL
+            s += '0x0.'
         else:
             s += '0x1.'
         man = bin(self.man)[2:].zfill(self.MAN + 1)[1:]
         for i in range(0, self.MAN, 4):
-            s += hex(int(man[i:i + 4].zfill(4), 2))[2:]
-        exp = str(self.exp)
+            s += hex(int((man[i:i + 4] + '0000')[:4], 2))[2:]
+        exp = str(self.exp + 1) if self.exp == self.MIN_EXP else str(self.exp)
         if self.exp >= 0:
             exp = '+' + exp
         s += 'p' + exp
