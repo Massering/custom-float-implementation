@@ -20,7 +20,7 @@ if __name__ == '__main__':
         FixedPoint.A, FixedPoint.B = tuple(map(int, FORMAT.split('.')))
         if len(args) == 1:
             a = FixedPoint(args[0])
-            print(a)
+            print(str(a))
         else:
             a, act, b = args
             a = FixedPoint(a)

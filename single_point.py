@@ -15,9 +15,10 @@ class Single:
     MAX_EXP = 128
     A = 1
     B = MAN
-    NULL_VALUE = '0x00000000'
     NULL = '0x0.000000p+0'
     NNULL = '-0x0.000000p+0'
+    NULL_VALUE = '0x00000000'
+    NNULL_VALUE = '0x80000000'
     NULLS = {NULL, NNULL}
 
     def __init__(self, bin_num: str):
@@ -140,9 +141,12 @@ class Single:
 
         exp = (self.exp + other.exp) - self.MIN_EXP + k
         if exp >= 2 ** self.EXP - 1:
-            return self.__class__('inf')
+            return self.__class__('-' * sign + 'inf')
         if exp < 1:
-            return self.__class__('-inf')
+            if sign:
+                return self.__class__(self.NNULL_VALUE)
+            else:
+                return self.__class__(self.NULL_VALUE)
 
         return self.__class__(f'{sign}{bin(exp)[2:].zfill(self.EXP)[:self.EXP]}{man[1:].zfill(self.MAN)[:self.MAN]}')
 
@@ -161,6 +165,11 @@ class Single:
                 return self.__class__(self.NINF)
             else:
                 return self.__class__(self.INF)
+        if a in self.NULLS:
+            if sign:
+                return self.__class__(self.NNULL_VALUE)
+            else:
+                return self.__class__(self.NULL_VALUE)
 
         man_a = self.man * 2 ** (self.B * 2)
         man_b = other.man

@@ -1,3 +1,6 @@
+import sys
+
+
 class FixedPoint:
     A = 16
     B = 16
@@ -34,8 +37,9 @@ class FixedPoint:
 
     def __mul__(self, other):  # Операция *
         a, b = self.bin_num, other.bin_num
-        c = int(a, 2) * int(b, 2)
-        c = bin(c)[2:].zfill(self.A + self.A + self.B + self.B)
+        c = self.good_int() * other.good_int()
+        sign = c != abs(c)
+        c = bin(abs(c))[2:].zfill(self.A + self.A + self.B + self.B)
 
         o = len(c) - self.B
         if o >= len(c) or c[o] == '0' or c[o] == '1' and (self.B == 1 or set(c[o + 1:]) - {'0'} == set()) and c[o - 1] == '0':
@@ -43,7 +47,12 @@ class FixedPoint:
         else:
             c = bin(int(c[:o], 2) + 1)[2:].zfill(self.A + self.B)
 
-        c = FixedPoint('0b' + c[-(self.A + self.B):])
+        c = c[-(self.A + self.B):]
+        if sign:
+            c = ''.join(['10'[int(i)] for i in c])
+            c = FixedPoint('0b' + c) + FixedPoint('0x1')
+        else:
+            c = FixedPoint('0b' + c)
         return c
 
     def __truediv__(self, other):  # Операция /
@@ -56,7 +65,7 @@ class FixedPoint:
 
         # 0000_0001_0000_0000 (0000_0000)
         # ---------------------^---------
-        #                     -o
+        #                      o
         o = len(c) - self.B
         if o >= len(c) or c[o] == '0' or c[o] == '1' and set(c[o + 1:]) - {'0'} == set() and c[o - 1] == '0':
             c = c[:o].zfill(self.A + self.B)
@@ -67,6 +76,16 @@ class FixedPoint:
 
     def __invert__(self):
         return FixedPoint('0b' + ''.join('10'[int(i)] for i in self.bin_num))
+
+    def good_int(self):
+        n = 0
+        base = 1
+        for i in range(self.A + self.B - 1):
+            n += base * (self.bin_num[~i] == '1')
+            base <<= 1
+        if self.bin_num[0] == '1':
+            n -= base
+        return n
 
     def __repr__(self):
         return f'<0b{self.bin_num[:-self.B]}.{self.bin_num[-self.B:]} - {int(self)} - {str(self)}>'
