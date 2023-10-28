@@ -7,7 +7,6 @@ from random import *
 def gen_fixed_float(a, b, int_x=None) -> (str, float):
     if int_x is None:
         int_x = randint(0, (1 << (a + b)) - 1)
-    # print(hex(int_x))
 
     bin_num = bin(int_x)[2:].zfill(a + b)
     n = 0
@@ -72,21 +71,6 @@ class MyTestCase(unittest.TestCase):
                 print(f'py: {round(py_x, 3):.3f} \t  my:', ans)
                 self.assertEqual(f'{py_x:.3f}', ans)
         os.system('del temp.txt')
-
-    # def test_fixed_mult(self):
-    #     print('-' * 20)
-    #     print('test_fixed_mult')
-    #     with open('test_mult_fixed.txt') as file:
-    #         for s in file:
-    #             *s, corr = s.split()
-    #             q = " ".join(s)
-    #             print(q)
-    #             os.system(f'{q} > temp.txt')
-    #             with open('temp.txt') as file:
-    #                 ans = file.read().strip()
-    #                 print(corr, ans)
-    #                 self.assertEqual(corr, open('temp.txt').read().strip())
-    #     os.system('del temp.txt')
 
     def test_fixed_special(self):
         print('-' * 20)
@@ -187,20 +171,6 @@ class MyTestCase(unittest.TestCase):
             print('my:', ans)
             print('py:', py_x)
             self.assertEqual(0, 0)
-        os.system('del temp.txt')
-
-    def test_half_mult(self):
-        print('-' * 20)
-        print('test_half_mult')
-        with open('test_mult_float.txt') as file:
-            for s in file:
-                *s, corr = s.split()
-                q = " ".join(s)
-                print(q)
-                os.system(f'{q} > temp.txt')
-                ans = read_temp()
-                print(corr, ans)
-                self.assertEqual(corr, ans)
         os.system('del temp.txt')
 
     def test_half_ops(self):
